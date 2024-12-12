@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Box, Container } from "@mui/material";
+import Navbar from "./components/Navbar/Navbar";
+import Search from "./components/Search/Search";
+import MediaCard from "./components/MediaCard/MediaCard";
+import useFetchData from "./components/Hooks/useFetchData";
+import Loader from "./components/Loader/Loader";
+const App = () => {
+  const { data, error, loading, term, setTerm } = useFetchData();
+  if (error) {
+    return error.message;
+  }
 
-function App() {
+  const searchTerm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTerm(e.target.value);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <Navbar />
+      <Container maxWidth="sm">
+        <Box
+          sx={{
+            bgcolor: "#fafafa",
+            minHeight: "100vh",
+            padding: "12px 30px",
+            mt: 2,
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <h2>Tutorial</h2>
+          <Search term={term} searchTerm={searchTerm} />
+          {loading ? (
+            <Loader />
+          ) : (
+            data?.map((book) => <MediaCard book={book} key={book.id} />)
+          )}
+        </Box>
+      </Container>
+    </>
   );
-}
+};
 
 export default App;
